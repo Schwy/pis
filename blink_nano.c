@@ -17,7 +17,7 @@ extern int clock_nanosleep(clockid_t __clock_id, int __flags,
 	__const struct timespec *__req,
 	struct timespec *__rem);
 	  
-int var=0;
+int var=0; 
 
 /* the struct timespec consists of nanoseconds
  * and seconds. if the nanoseconds are getting
