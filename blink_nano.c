@@ -38,9 +38,16 @@ static inline void tsnorm(struct timespec *ts)
 /* increment counter and write to PIN */
 void out()
 {
-	(var++)%2;
-	if(var==1)digitalWrite(PIN, HIGH);	// On
-	else digitalWrite(PIN, LOW);
+	if(var==0)
+	{
+		var=1;
+		digitalWrite(PIN, HIGH);	// On
+	}
+	else
+	{
+		var=0;
+		digitalWrite(PIN, LOW);
+	}
 }
 
 int main(int argc,char** argv)
