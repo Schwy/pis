@@ -17,9 +17,6 @@ extern int clock_nanosleep(clockid_t __clock_id, int __flags,
 	__const struct timespec *__req,
 	struct timespec *__rem);
 	  
-int var=0;
-wiringPiSetup();
-pinMode (PIN, OUTPUT);
 
 /* the struct timespec consists of nanoseconds
  * and seconds. if the nanoseconds are getting
@@ -53,6 +50,10 @@ int main(int argc,char** argv)
 	* cycle duration = 100us
 	*/
 	int interval=50000;
+	
+	int var=0;
+	wiringPiSetup();
+	pinMode (PIN, OUTPUT);
 
 	if(argc>=2 && atoi(argv[1])>0)
 	{
