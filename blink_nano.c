@@ -14,8 +14,8 @@
 
 /* using clock_nanosleep of librt */
 extern int clock_nanosleep(clockid_t __clock_id, int __flags,
-      __const struct timespec *__req,
-      struct timespec *__rem);
+	__const struct timespec *__req,
+	struct timespec *__rem);
 	  
 boolean var=false;
 
@@ -28,54 +28,57 @@ boolean var=false;
  */
 static inline void tsnorm(struct timespec *ts)
 {
-   while (ts->tv_nsec >= NSEC_PER_SEC) {
-      ts->tv_nsec -= NSEC_PER_SEC;
-      ts->tv_sec++;
-   }
+	while (ts->tv_nsec >= NSEC_PER_SEC)
+	{
+		ts->tv_nsec -= NSEC_PER_SEC;
+		ts->tv_sec++;
+	}
 }
 
 /* increment counter and write to PIN */
 void out()
 {
-	var = !var;
-	if(var)digitalWrite(PIN, HIGH);	// On
+	(var++)%2;
+	if(var==1)digitalWrite(PIN, HIGH);	// On
 	else digitalWrite(PIN, LOW);
 }
 
 int main(int argc,char** argv)
 {
-   struct timespec t;
-   struct sched_param param;
-   /* default interval = 50000ns = 50us
-    * cycle duration = 100us
-    */
-   int interval=50000;
+	struct timespec t;
+	struct sched_param param;
+	/* default interval = 50000ns = 50us
+	* cycle duration = 100us
+	*/
+	int interval=50000;
 
-   if(argc>=2 && atoi(argv[1])>0)
-   {
-      printf("using realtime, priority: %d\n",atoi(argv[1]));
-      param.sched_priority = atoi(argv[1]);
-      /* enable realtime fifo scheduling */
-      if(sched_setscheduler(0, SCHED_FIFO, &param)==-1){
-         perror("sched_setscheduler failed");
-         exit(-1);
-      }
-   }
-   if(argc>=3)
-      interval=atoi(argv[2]);
+	if(argc>=2 && atoi(argv[1])>0)
+	{
+		printf("using realtime, priority: %d\n",atoi(argv[1]));
+		param.sched_priority = atoi(argv[1]);
+		/* enable realtime fifo scheduling */
+		if(sched_setscheduler(0, SCHED_FIFO, &param)==-1)
+		{
+			perror("sched_setscheduler failed");
+			exit(-1);
+		}
+	}
+	if(argc>=3)
+		interval=atoi(argv[2]);
 
-   /* get current time */
-   clock_gettime(0,&t);
-   /* start after one second */
-   t.tv_sec++;
-   while(1){
-      /* wait untill next shot */
-      clock_nanosleep(0, TIMER_ABSTIME, &t, NULL);
-      /* do the stuff */
-      out();
-      /* calculate next shot */
-      t.tv_nsec+=interval;
-      tsnorm(&t);
-   }
-   return 0;
+	/* get current time */
+	clock_gettime(0,&t);
+	/* start after one second */
+	t.tv_sec++;
+	while(1)
+	{
+		/* wait untill next shot */
+		clock_nanosleep(0, TIMER_ABSTIME, &t, NULL);
+		/* do the stuff */
+		out();
+		/* calculate next shot */
+		t.tv_nsec+=interval;
+		tsnorm(&t);
+	}
+	return 0;
 }
