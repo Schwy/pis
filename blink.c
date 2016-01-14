@@ -9,16 +9,16 @@
 
 #define	LED	0
 
-int main (void)
+int main(void)
 {
-	printf ("Raspberry Pi blink\n");
+	printf("Raspberry Pi blink\n");
 
 	wiringPiSetup ();
 	pinMode (LED, OUTPUT);
 
 	for (;;)
 	{
-		digitalWrite()LED, HIGH);	// On
+		digitalWrite(LED, HIGH);	// On
 		delay (200);	// mS
 		digitalWrite(LED, LOW);	// Off
 		delay (200);
