@@ -1,5 +1,8 @@
-/* compile using  "gcc -o swave swave.c -lrt -Wall"  */
-/*https://rt.wiki.kernel.org/index.php/Squarewave-example */
+/* compile using  "gcc -o swave swave.c -lrt -Wall"  		*/
+/* https://rt.wiki.kernel.org/index.php/Squarewave-example 	*/
+/* Paramètre 1 : priorité (0-99)							*/
+/* Paramèter 2 : intervalle en ns							*/
+/* Ajouts & divers Antoine G. 14/01/						*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -8,9 +11,7 @@
 #include <sys/io.h>
 
 #define NSEC_PER_SEC    1000000000
-
-// PIN - wiringPi pin 0 is BCM_GPIO 17.
-#define	PIN	0
+#define	PIN	0	// Utilisation du  GPIO17 / wiringPi
 
 /* using clock_nanosleep of librt */
 extern int clock_nanosleep(clockid_t __clock_id, int __flags,
@@ -35,18 +36,18 @@ static inline void tsnorm(struct timespec *ts)
 	}
 }
 
-/* increment counter and write to PIN */
+/* Alternance HIGH/LOW sur PIN */
 void out()
 {
 	if(var==0)
 	{
 		var=1;
-		digitalWrite(PIN, HIGH);	// On
+		digitalWrite(PIN, HIGH);	// Sortie HIGH
 	}
 	else
 	{
 		var=0;
-		digitalWrite(PIN, LOW);
+		digitalWrite(PIN, LOW);		// Sortie LOW
 	}
 }
 
