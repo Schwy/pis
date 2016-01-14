@@ -13,9 +13,8 @@ int main(void)
 {
 	printf("Raspberry Pi blink\n");
 	int time=0;
-	wiringPiSetup ();
+	wiringPiSetup();
 	pinMode (PIN, OUTPUT);
-	time = clock_gettime;
 
 	for (;;)
 	{
