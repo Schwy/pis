@@ -18,11 +18,8 @@ extern int clock_nanosleep(clockid_t __clock_id, int __flags,
 	struct timespec *__rem);
 	  
 int var=0;
-<<<<<<< HEAD
 wiringPiSetup();
 pinMode (PIN, OUTPUT);
-=======
->>>>>>> 5f2a58a97e350289a88652ed9efba73897ce0b60
 
 /* the struct timespec consists of nanoseconds
  * and seconds. if the nanoseconds are getting
