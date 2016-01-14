@@ -24,4 +24,4 @@ int main(void)
 		//delay (1);	// mS, marche avec 1
 	}
 	return 0;
-} 
+}
