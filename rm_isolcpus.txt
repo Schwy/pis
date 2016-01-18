@@ -1,0 +1,35 @@
+18/01/2016
+*---------------------------*
+*- Isolation processus CPU -*
+*---------------------------*
+
+*---------
+* Objectif
+Isoler sur trois des quatre coeurs du CPU les IRQ (interruptions matérielles) pour permettre au programme de tourner -quasiment- tout seul sur le coeur restant.
+
+*------------
+* Réalisation
+
+cat /proc/interrupts
+Identification des numéros associés aux IRQ. [cat_interrupts]
+Suivant les indications de mon tuteur, j'identifie les numéros suivants : bcm2708_fd dma (numéro 16, vidéo),  dwc_otg (#32, USB), DMA IRQ (#77, interruptions matérielles), et mmc0 (#83, carte SD), qui ne seraient pas à traiter en priorité et pourraient être isolées sur trois coeurs.
+
+vi /proc/irq/[numéro IRQ]/smp_affinity
+On veut ensuite modifier le code du fichier smp_affinity pour chaque numéro correspondant à l'interruption à isoler. Cependant, linux ne m'a pas autorisé à modifier ce fichier, même avec une élévation des privilèges ou avec l'utilisateur root. Il faut donc procéder différemment.
+
+isolcpus=3
+En modifiant directement le boot loader de la carte SD, il est possible d'isoler un coeur, qui ne sera pas utilisé sauf si demandé explicitement (taskset). Les coeurs étant numérotés de 0 à 3, j'ai choisi d'isoler le coeur numéro 3.
+
+stress -c 4
+Pour tester le bon fonctionnement de cette isolation, on se sert d'un stress test. On constate que même si le test est censé être réalisé sur les 4 coeurs d'apres l'option -c 4, il ne s'effectue que sur trois coeurs. L'isolation est donc effective. [isolcpus_stress_c_4]
+
+sudo taskset 8 ./blink_nano 9 10000
+Pour vérifier qu'on peut bien exécuter le programme sur le coeur n°4, on fait un taskset en précisant le processeur à utiliser, le tout avec un temps d'éxecution très faible pour utiliser beaucoup de ressource et pouvoir constater l'utilisation du CPU. [isolcpus_blink_nano]. On notera que sans le taskset, le programme blink_nano est exécuté par l'un des trois premier coeurs, conformément à mes attentes.
+
+*-----------
+* Conclusion
+On a constaté l'isolation effective d'un coeur, qui peut toutefois être utilisé par un ou plusieurs programmes lorsque précisé dans la commande d'éxecution. Cette isolation peut se faire de différentes façons qui ne sont pas équivalentes. Dans un premier temps, j'ai voulu faire en sorte que certaines interruptions, gourmandes en ressource, ne soient traitées que par trois CPU. Face à l'impossibilité (du moins apparente) de procéder à cette isolation, j'ai finalement réussi à isoler un coeur de tous les programmes (plutôt que d'affecter certains programmes ou interruptions aux autres coeurs), ce qui je pense contribue de façon plus fiable à la stabilité du système.
+
+*----
+* src
+https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-cpu-irq.html
