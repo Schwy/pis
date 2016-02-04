@@ -14,10 +14,15 @@ int duty = 25;     // Duty cycle
 int range = 100; // value passed to pwmSetRange.
 int clock = 19;   // value passed to pwmSetClock.
 int mode = 0;     // 0=balanced, 1=mark:space
+int mowd = 0;
 
 void init(void)
 {
 	//Print information
+	printf("\nMode? (0=Mark:space 1=Balanced)\t");
+		scanf("%d",&mowd);
+		if(mowd==1){pwmSetMode(PWM_MODE_BAL);}
+		else pwmSetMode(PWM_MODE_MS);
 	printf("\nPin? (default=%d) [1/24]\t",PWMpin);
 		scanf("%d",&PWMpin);
 		//PWMpin = &PWMpin;
