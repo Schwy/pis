@@ -18,16 +18,17 @@
 #include <stdio.h>
 
 
+int PWMpin= 1;    // 1 right (Or 24 left if model B+).
+int duty = 0;     // Duty cycle
+
 /***************************************************************************
  * menu() function - Display the menu and execute the choices.
  ***************************************************************************/
 void init(void)
 {
-	int PWMpin= 1;    // 1 right (Or 24 left if model B+).
 	int range = 100; // value passed to pwmSetRange.
 	int clock = 19;   // value passed to pwmSetClock.
 	int mode = 0;     // 0=balanced, 1=mark:space
-	int duty = 0;     // Duty cycle
 	int choice=0;
 	int i; // Index for fade for loop. 
 	int x; // Fade in/out switch.
