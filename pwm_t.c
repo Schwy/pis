@@ -28,7 +28,7 @@ void init(void)
 	printf("\nClock? (default=%d)\t",clock);
 		scanf("%d", &clock);
 		pwmSetClock(clock);
-	printf("\nDuty cy.? (default=%d%%)\t",duty);
+	printf("\nDuty cycle? (default=%d%%)\n[0-%d]\t\t\t",duty,range);
 		scanf("%d", &duty);
 		pwmWrite(PWMpin, duty);
 }
@@ -47,13 +47,16 @@ int main(void)
 void change_range_clock_loop(void)
 {
 	int mod = 0; // 0=range - 1=clock
-	int duty_r = 0;
-	int clock_r(1) // Display choices
+	int duty_r = duty;
+	int clock_r = clock;
+
+
+while(1) // Display choices
 	{
 		if(mod==0)
 		{
 			pwmWrite(PWMpin, duty_r);
-			printf("\nNew duty cycle? [0-%d] (current=%d%%)\n(range+1 to switch to clock control) ",duty,range);
+			printf("\nNew duty cycle? [0-%d] (current=%d%%)\n(range+1 to switch to clock control) ",range,duty_r);
 			scanf("%d", &duty);
 			if(duty == range+1)
 				{mod++;}
@@ -63,7 +66,7 @@ void change_range_clock_loop(void)
 		if(mod==1)
 		{
 			pwmSetClock(clock_r);
-			printf("\nNew clock? (current=%d)\n(0 to switch to range control) ",clock,range);
+			printf("\nNew clock? (current=%d)\n(0 to switch to range control) ",clock_r);
 			scanf("%d", &clock);
 			if(clock == 0)
 				{mod--;}
