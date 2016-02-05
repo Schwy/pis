@@ -1,0 +1,42 @@
+18/01/2016
+*---------------------------*
+*-         Test PWM        -*
+*---------------------------*
+
+*---------
+* Objectif
+Afin de contrôler nos deux moteurs DC, nous avons besoin d'utiliser deux PWM. La carte Raspberry possède deux GPIO qui peuvent être utilisés pour réaliser des fonctions de PWM. Il s'agit des GPIO des pins 12 (wiringPi 1) et 35 (wiringPi 24). Nous voulons vérifier leur bon fonctionnement ainsi que mesurer leurs performances (fréquence, précision).
+
+*------------
+* Réalisation
+Nous souhaitons ici modifier le rapport cyclique d'un signal carré dans le but de le transmettre à notre contrôleur de moteur, ce qui nous permettra d'indiquer la vitesse souhaitée du moteur. La Raspberry Pi 2 est pourvue de plusieurs GPIO pouvant être utilisés comme PWM. Nous utiliserons la bibliothèque Wiring Pi, qui nous permet de communiquer avec ces derniers.
+Cette bibliothèque propose plusieurs fonctions permettant de modifier les différents paramètres de notre PWM :
+	- pwmSetRange(range) : nous permet de sélectionner la plage de données ([0;range]) qui seront utilisées pour définir notre rapport cyclique. La précision du PWM augmente avec la valeur de range.
+	- pwmSetClock(clock) : permet de définir la "clock" du PWM. Plus la valeur de clock est faible, plus la fréquence est élevée.
+	- pwmWrite(PWMpin, duty) : définit le rapport cyclique, avec des valeurs appartenant à l'intervalle [0;range]. 0 donne un rapport cyclique de 0%, range un rapport cyclique de 100% et range/2 un rapport cyclique de 50%.
+Le PWM ne se fait pas en suivant une horloge fixe, en faisant varier la largeur des impulsions comme on pourrait le penser. Les impulsions ont parfois la même épaisseur, mais c'est le temps entre deux impulsions qui réduit (comme par exemple ici avec des duty cycles de 20% et 25%[duty_20][duty_25]. A l'inverse, pour des duty cycle plus élevés (supérieurs à 50%), c'est le temps de l'état bas qui varie [duty_75][duty_80]. Pour des valeurs ne divisant pas 100, l'oscilloscope n'arrive pas à trigger les courbes, mais parvient bien à mesurer la fréquence, comme ici avec un duty cycle de 45%[kurv_fail_freq_ok]. A noter que l'indicateur "Duty" de l'oscilloscope change constamment, à des valeurs autour du duty cycle, et on peut penser que la moyenne de ces valeurs se rapproche de notre duty cycle. Je suppose donc que le PWM fonctionne bien et qu'il n'y aura pas de problème pour contrôler les moteurs (ce qui sera vérifié expérimentalement).
+ ___________________________
+|	duty_cycle	fréquence	|
+|	0%			0  kHz		|
+|	10%			10 kHz		|
+|	20%			20 kHz		|
+|	30%			30 kHz		|
+|	40%			40 kHz		|
+|	50%			50 kHz		|
+|	60%			40 kHz		|
+|	70%			30 kHz		|
+|	80%			20 kHz		|
+|	90%			10 kHz		|
+|	100%		0  kHz		|
+|___________________________|
+
+La datasheet du motor driver MAX14870 indique que le PWM doit avoir une fréquence maximale de 50kHz. D'après les informations trouvrées sur internet, le PWM a une fréquence de 19.2MHz, et ainsi nous déterminons que pour la variable clock, une valeur de 192 permettait d'avoir une fréquence de 50kHz pour une duty cycle de 50%, pour lequel la fréquence est maximale.
+
+
+*-----------
+* Conclusion
+En dépit des courbes qui s'affichent à l'oscilloscope qui peuvent laisser penser que le PWM ne fonctionne pas, les deux pins GPIO (1 et 24) pouvant être utilisés comme PWM ont été testés avec succès, en respectant la fréquence maximale de fonctionnement du motor driver.
+
+*----
+* src
+http://www.instructables.com/id/RaspberryPi-Pulse-Width-Modulation-Demonstration

@@ -1,8 +1,11 @@
+/************************************************************/
 /* compile using  "gcc -o swave swave.c -lrt -Wall"  		*/
 /* https://rt.wiki.kernel.org/index.php/Squarewave-example 	*/
-/* Paramètre 1 : priorité (0-99)							*/
-/* Paramèter 2 : intervalle en ns							*/
-/* Ajouts & divers Antoine G. 14/01/						*/
+/* Parameter 1 : priority (0-99)							*/
+/* Parameter 2 : pulse, in ns								*/
+/* Modifications & additions by Antoine G. 2016/01/14		*/
+/************************************************************/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -19,14 +22,8 @@ extern int clock_nanosleep(clockid_t __clock_id, int __flags,
 	struct timespec *__rem);
 	  
 	int var=0;
-
-/* the struct timespec consists of nanoseconds
- * and seconds. if the nanoseconds are getting
- * bigger than 1000000000 (= 1 second) the
- * variable containing seconds has to be
- * incremented and the nanoseconds decremented
- * by 1000000000.
- */
+	
+//Structure ns
 static inline void tsnorm(struct timespec *ts)
 {
 	while (ts->tv_nsec >= NSEC_PER_SEC)
