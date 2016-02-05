@@ -12,9 +12,9 @@ void change_range_clock_loop(void);
 int PWMpin= 1;    // 1 right (Or 24 left if model B+).
 int duty = 25;     // Duty cycle
 int range = 100; // value passed to pwmSetRange.
-int clock = 19;   // value passed to pwmSetClock.
-int mode = 0;     // 0=balanced, 1=mark:space
-int mowd = 0;
+int clock = 192;   // value passed to pwmSetClock.
+int mode = 1;     // 0=balanced, 1=mark:space
+int mowd = 1;
 
 void init(void)
 {
@@ -61,7 +61,7 @@ while(1) // Display choices
 		if(mod==0)
 		{
 			pwmWrite(PWMpin, duty_r);
-			printf("\nNew duty cycle? [0-%d] (current=%d%%)\n(range+1 to switch to clock control) ",range,duty_r);
+			printf("\nNew duty cycle? [0-%d] (%d to switch to clock control)\ncurrent: clock=%d duty=%d%% ",range,range+1,clock_r,duty_r);
 			scanf("%d", &duty);
 			if(duty == range+1)
 				{mod++;}
@@ -71,7 +71,7 @@ while(1) // Display choices
 		if(mod==1)
 		{
 			pwmSetClock(clock_r);
-			printf("\nNew clock? (current=%d)\n(0 to switch to range control) ",clock_r);
+			printf("\nNew clock? (0 to switch to range control)\ncurrent: clock=%d duty=%d%% ",clock_r,duty_r);
 			scanf("%d", &clock);
 			if(clock == 0)
 				{mod--;}
